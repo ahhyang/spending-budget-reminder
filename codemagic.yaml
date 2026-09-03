@@ -1,0 +1,26 @@
+# Codemagic sample config (optional).
+# Connect this repo at https://codemagic.io then enable the workflow.
+#
+# Without Apple certs: use the "ios-unsigned" workflow.
+# With Apple certs: fill in code signing in Codemagic UI / env vars.
+
+workflows:
+  ios-unsigned:
+    name: iOS unsigned (compile check)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Get packages
+        script: flutter pub get
+      - name: Install pods
+        script: |
+          cd ios
+          pod install
+      - name: Build iOS (no codesign)
+        script: flutter build ios --release --no-codesign
+    artifacts:
+      - build/ios/iphoneos/*.app
